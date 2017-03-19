@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>magnesium control</title>
+  <link rel="stylesheet" href="assets/semantic.min.css" />
+  <script src="assets/jquery-1.9.1.min.js"></script>
+  <script src="assets/semantic.min.js"></script>
+</head>
+
+<body>
+  <div class="ui basic center aligned segment">
+    <h1 class="ui header">magnesium controls</h1>
+  </div>
+  <div class="ui basic center aligned segment">
+    <button class="ui button" id="btnStop" type="button" name="button"><i class="stop icon"></i>stop</button>
+    <button class="ui button" id="btnNext" type="button" name="button"><i class="step forward icon"></i>next</button>
+  </div>
+  <script type="text/javascript">
+    var electron = require("electron")
+
+    var btnNext = document.getElementById("btnNext");
+    btnNext.onclick = function() {
+      electron.ipcRenderer.send('next');
+    }
+    var btnStop = document.getElementById("btnStop");
+    btnStop.onclick = function() {
+      electron.ipcRenderer.send('stop');
+    }
+  </script>
+</body>
+
+</html>
