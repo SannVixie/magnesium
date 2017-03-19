@@ -10,25 +10,8 @@
 </head>
 
 <body>
-  <div class="ui basic center aligned segment">
-    <h1 class="ui header">magnesium controls</h1>
-  </div>
-  <div class="ui basic center aligned segment">
-    <button class="ui button" id="btnStop" type="button" name="button"><i class="stop icon"></i>stop</button>
-    <button class="ui button" id="btnNext" type="button" name="button"><i class="step forward icon"></i>next</button>
-  </div>
-  <script type="text/javascript">
-    var electron = require("electron")
-
-    var btnNext = document.getElementById("btnNext");
-    btnNext.onclick = function() {
-      electron.ipcRenderer.send('next');
-    }
-    var btnStop = document.getElementById("btnStop");
-    btnStop.onclick = function() {
-      electron.ipcRenderer.send('stop');
-    }
-  </script>
+  <div id="app"></div>
+  <script src="index.min.js"></script>
 </body>
 
 </html>
