@@ -1,5 +1,5 @@
 const electron = require('electron')
-const playlist = require('./playlist')
+const playlist = require('./lib/playlist')
 
 const app = electron.app
 
