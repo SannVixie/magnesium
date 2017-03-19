@@ -1,5 +1,6 @@
 const electron = require('electron')
 const playlist = require('./lib/playlist')
+const globalShortcut = electron.globalShortcut
 
 const app = electron.app
 
@@ -27,6 +28,12 @@ const playNext = () => {
   });
 }
 
+const stop = ()=>{
+  playing = false;
+  console.log("stop clicked");
+  playerWindow.loadURL("https://stopped");
+}
+
 const createWindow = () => {
 
   controlWindow = new BrowserWindow({width: 400, height: 200})
@@ -41,7 +48,7 @@ const createWindow = () => {
   }))
   // controlWindow.webContents.openDevTools();
 
-  playerWindow = new BrowserWindow({show: false, width: 400, height: 200})
+  playerWindow = new BrowserWindow({show: false, width: 800, height: 600})
   playerWindow.on('closed', () => {
     playerWindow = null
     controlWindow && controlWindow.close()
@@ -67,11 +74,10 @@ const createWindow = () => {
     console.log("next clicked");
     playNext();
   });
-  electron.ipcMain.on("stop", () => {
-    playing = false;
-    console.log("stop clicked");
-    playerWindow.loadURL("https://stopped");
-  });
+  electron.ipcMain.on("stop", stop);
+
+  globalShortcut.register('MediaNextTrack', playNext);
+  globalShortcut.register('MediaStop', stop);
 }
 
 app.on('ready', createWindow)
