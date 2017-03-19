@@ -6,8 +6,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package-linux":"./node_modules/.bin/electron-packager . --ignore playlist.txt && cp ./playlist.txt ./magnesium-linux-x64/",
-    "package-win32":"./node_modules/.bin/electron-packager . --platform=win32 --ignore playlist.txt && cp ./playlist.txt ./magnesium-win32-x64/",
+    "package-linux":"bash scripts/package-linux",
+    "package-win32":"bash scripts/package-win32",
+    "package-all":"npm run package-linux & npm run package-win32",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
