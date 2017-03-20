@@ -1,50 +1,48 @@
-
 /* eslint "import/no-extraneous-dependencies": "off" */
 
 const electron = require('electron');
 const playlist = require('./lib/playlist');
-
-const globalShortcut = electron.globalShortcut;
-
-const app = electron.app;
-
-const BrowserWindow = electron.BrowserWindow;
-
+const player = require('./lib/player');
 const path = require('path');
 const url = require('url');
+const youtube = require('./lib/youtube');
 
-let playerWindow;
+const globalShortcut = electron.globalShortcut;
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+
+let tracks = [];
 let controlWindow;
-let playing = false;
-let nextInProgress = false;
 
-const playNext = () => {
-  console.log('playNext');
-  if (nextInProgress) {
-    return;
-  }
-  nextInProgress = true;
-  playing = false;
-  playlist.next((videoUrl, query) => {
-    console.log('playNext', videoUrl, query);
-    playerWindow.loadURL(videoUrl);
-    nextInProgress = false;
+let nowPlaying = '';
+
+const getRandomSong = () => tracks[Math.floor(Math.random() * tracks.length)];
+
+const doNext = () => {
+  nowPlaying = getRandomSong();
+  youtube.video.find(nowPlaying, (videoUrl, query) => {
+    if (query === nowPlaying) {
+      player.play(videoUrl);
+    }
   });
 };
 
-const stop = () => {
-  playing = false;
+const doStop = () => {
   console.log('stop clicked');
-  playerWindow.loadURL('https://stopped');
+  player.stop();
 };
 
 const createWindow = () => {
+  player.create();
+  playlist.load('./playlists/playlist.txt', (ts) => {
+    tracks = ts;
+    doNext();
+  });
+
   controlWindow = new BrowserWindow({ width: 400, height: 200 });
   controlWindow.on('closed', () => {
     controlWindow = null;
-    if (playerWindow) {
-      playerWindow.close();
-    }
+    player.close();
   });
   controlWindow.loadURL(url.format({
     pathname: path.join(__dirname, './ui-control/index.html'),
@@ -53,36 +51,13 @@ const createWindow = () => {
   }));
   // controlWindow.webContents.openDevTools();
 
-  playerWindow = new BrowserWindow({ show: false, width: 800, height: 600 });
-  playerWindow.on('closed', () => {
-    playerWindow = null;
-    if (controlWindow) { controlWindow.close(); }
-  });
-  // playerWindow.webContents.openDevTools();
+  player.on('stopped', doNext);
 
-  playerWindow.webContents.on('media-started-playing', () => {
-    console.log('media-started-playing');
-    setTimeout(() => {
-      console.log('playing = true');
-      playing = true;
-    }, 2000);
-  });
+  electron.ipcMain.on('next', doNext);
+  electron.ipcMain.on('stop', doStop);
 
-  playerWindow.webContents.on('media-paused', () => {
-    console.log('media-paused');
-    if (playing) {
-      playNext();
-    }
-  });
-
-  electron.ipcMain.on('next', () => {
-    console.log('next clicked');
-    playNext();
-  });
-  electron.ipcMain.on('stop', stop);
-
-  globalShortcut.register('MediaNextTrack', playNext);
-  globalShortcut.register('MediaStop', stop);
+  globalShortcut.register('MediaNextTrack', doNext);
+  globalShortcut.register('MediaStop', doStop);
 };
 
 app.on('ready', createWindow);
@@ -90,7 +65,5 @@ app.on('ready', createWindow);
 app.on('window-all-closed', app.quit);
 
 app.on('activate', () => {
-  if (playerWindow === null) {
-    createWindow();
-  }
+  console.log('app:on:activate');
 });

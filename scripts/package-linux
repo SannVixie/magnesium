@@ -10,10 +10,10 @@ echo "remove package dir"
 rm -rf *
 
 echo "package"
-electron-packager ../.. --platform=linux --ignore playlist.txt --ignore releases --ignore scripts
+electron-packager ../.. --platform=linux --ignore playlists --ignore releases --ignore scripts
 
 echo "copy default playlist"
-cp ../../playlist.txt "magnesium-linux-x64/"
+cp -r ../../playlists "magnesium-linux-x64/"
 
 echo "archive app"
 tar cf "magnesium-$npm_package_version-linux-x64.tar.gz" "magnesium-linux-x64"
