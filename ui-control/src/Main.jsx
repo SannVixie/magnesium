@@ -1,26 +1,42 @@
-import React from "react";
+import React from 'react';
 import electron from 'electron';
 
 export default class Main extends React.Component {
 
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      playing: '',
+    };
+
+    this.updatePlaying = (e, playing) => this.setState({ playing });
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount');
+    electron.ipcRenderer.send('playing');
+    electron.ipcRenderer.on('playing', this.updatePlaying);
+  }
+
+  componentWillUnmount() {
+    console.log('componentWillUnmount');
+    electron.ipcRenderer.removeListener('playing', this.updatePlaying);
   }
 
   render() {
-    console.log("render main", !!electron);
-
     return (
       <div>
-        <div class="ui basic center aligned segment">
-          <h1 class="ui header">magnesium controls</h1>
+        <div className="ui basic center aligned segment">
+          <button className="ui button" type="button" onClick={() => electron.ipcRenderer.send('stop')}>
+            <i className="stop icon" />
+            stop</button>
+          <button className="ui button" type="button" onClick={() => electron.ipcRenderer.send('next')}>
+            <i className="step forward icon" />
+            next</button>
         </div>
-        <div class="ui basic center aligned segment">
-          <button class="ui button" type="button" onClick={() => electron.ipcRenderer.send("stop")}>
-            <i class="stop icon"></i>stop</button>
-          <button class="ui button" type="button" onClick={() => electron.ipcRenderer.send("next")}>
-            <i class="step forward icon"></i>next</button>
+
+        <div className="ui basic center aligned segment">
+          <h1 className="ui header">{this.state.playing}</h1>
         </div>
       </div>
     );

@@ -2,6 +2,7 @@
     "extends": "airbnb",
     "rules": {
         "no-console": "off",
-        "no-restricted-syntax": "off"
+        "no-restricted-syntax": "off",
+        "import/no-extraneous-dependencies": "off"
     }
 }
