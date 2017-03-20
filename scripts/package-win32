@@ -10,10 +10,10 @@ echo "remove package dir"
 rm -rf *
 
 echo "package"
-electron-packager ../.. --platform=win32 --ignore playlist.txt --ignore releases --ignore scripts
+electron-packager ../.. --platform=win32 --ignore playlists --ignore releases --ignore scripts
 
 echo "copy default playlist"
-cp ../../playlist.txt "magnesium-win32-x64/"
+cp -r ../../playlists "magnesium-win32-x64/"
 
 echo "archive app"
 tar cf "magnesium-$npm_package_version-win32-x64.zip" "magnesium-win32-x64"
