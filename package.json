@@ -1,17 +1,16 @@
 {
   "name": "magnesium",
   "productName": "magnesium",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
-  "main": "main.js",
+  "main": "main/index.js",
   "scripts": {
     "start": "electron .",
-    "webpack": "webpack",
     "package-linux": "bash scripts/package-linux",
     "package-win32": "bash scripts/package-win32",
     "package-all": "npm run package-linux & npm run package-win32",
-    "lint":"eslint --fix main.js lib/ ui-control/src/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "gulp lint",
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -34,6 +33,10 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.2",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-if": "^2.0.2",
+    "gulp-jsbeautifier": "^2.1.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "webpack": "^2.2.1"
