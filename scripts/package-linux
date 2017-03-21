@@ -10,7 +10,7 @@ echo "remove package dir"
 rm -rf *
 
 echo "package"
-electron-packager ../.. --platform=linux --ignore playlists --ignore releases --ignore scripts
+electron-packager ../.. --platform=linux --ignore playlists --ignore releases --ignore scripts --ignore src
 
 echo "copy default playlist"
 cp -r ../../playlists "magnesium-linux-x64/"

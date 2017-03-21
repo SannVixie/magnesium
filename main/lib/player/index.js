@@ -1,31 +1,36 @@
 /* eslint "import/no-extraneous-dependencies": "off" */
 const electron = require('electron');
-const events = require('events');
+const EventEmitter = require('events').EventEmitter;
 
-const emitter = new events.EventEmitter();
+const emitter = new EventEmitter();
+const on = emitter.on.bind(emitter);
 
 const BrowserWindow = electron.BrowserWindow;
-let playerWindow;
+let win = null;
 let state = 'stopped';
 
 const create = () => {
-  playerWindow = new BrowserWindow({ show: false, width: 200, height: 200 });
-
-  playerWindow.loadURL('about:blank');
-
-  playerWindow.on('closed', () => {
-    emitter.emit('closed');
-    playerWindow = null;
+  win = new BrowserWindow({
+    show: false,
+    width: 200,
+    height: 200,
   });
 
-  playerWindow.webContents.on('media-started-playing', () => {
+  win.loadURL('about:blank');
+
+  win.on('closed', () => {
+    emitter.emit('closed');
+    win = null;
+  });
+
+  win.webContents.on('media-started-playing', () => {
     setTimeout(() => {
       state = 'playing';
       emitter.emit('playing');
     }, 2000);
   });
 
-  playerWindow.webContents.on('media-paused', () => {
+  win.webContents.on('media-paused', () => {
     if (state === 'playing') {
       emitter.emit('stopped');
       state = 'stopped';
@@ -34,20 +39,30 @@ const create = () => {
 };
 
 const close = () => {
-  playerWindow.close();
+  if (win) {
+    win.close();
+  }
 };
 
 const play = (videoUrl) => {
+  if (!win) {
+    create();
+  }
   state = 'starting';
-  playerWindow.loadURL(videoUrl);
+  win.loadURL(videoUrl);
 };
+
 const stop = () => {
-  state = 'stopped';
-  playerWindow.loadURL('about:blank');
+  close();
 };
-const on = emitter.on.bind(emitter);
+const show = () => {
+  if (win) {
+    win.show();
+  }
+};
 
 module.exports = {
+  show,
   create,
   close,
   play,
